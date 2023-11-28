@@ -112,6 +112,8 @@ class NET_DVR_Command(IntEnum):
     """
     设备配置命令, 不同的获取功能对应不同的结构体和命令号
     """
+    NET_DVR_GET_RECORDCFG = 108                   # Get recording settings, returns god knows what todo
+    NET_DVR_SET_RECORDCFG = 109                   # Set recording settings, takes god knows what todo
     NET_DVR_GET_TRACK_PARAMCFG = 197              # 获取球机本地菜单规则, 对应结构体 NET_DVR_TRACK_PARAMCFG
     NET_DVR_GET_NFSCFG = 230                      # Get NFS storage settings, returns NET_DVR_NFSCFG
     NET_DVR_SET_NFSCFG = 231                      # Set NFS storage settings, takes NET_DVR_NFSCFG

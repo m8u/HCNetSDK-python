@@ -439,3 +439,7 @@ class NetClient(metaclass=Singleton):
             sizeof(_nfs_cfg),
         )
         return bool(ok)
+
+    @classmethod
+    def FormatDisk(cls, lUserId: c_long, disk_number: int):
+        return cls.sdk.NET_DVR_FormatDisk(lUserId, disk_number)
