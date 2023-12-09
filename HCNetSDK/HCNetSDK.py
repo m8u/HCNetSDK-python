@@ -374,7 +374,7 @@ class NetClient(metaclass=Singleton):
         return cls.play_sdk.PlayM4_FreePort(port)
 
     @classmethod
-    def GetDVRConfig_NFS(cls, lUserId: c_long) -> list[dict[str, str]]:
+    def GetDVRConfig_NFSCFG(cls, lUserId: c_long) -> list[dict[str, str]] | None:
         """
         Get NFS disks configuration
 
@@ -402,10 +402,10 @@ class NetClient(metaclass=Singleton):
                 "directory": bytes(disk.sNfsDirectory).decode().split("\x00")[0]
             }
             for disk in nfs_cfg.struNfsDiskParam
-        ] if ok else []
+        ] if ok else None
 
     @classmethod
-    def SetDVRConfig_NFS(cls, lUserId: c_long, nfs_cfg: list[dict[str, str]]) -> bool:
+    def SetDVRConfig_NFSCFG(cls, lUserId: c_long, nfs_cfg: list[dict[str, str]]) -> bool:
         """
         Set NFS disks configuration
 
@@ -441,5 +441,78 @@ class NetClient(metaclass=Singleton):
         return bool(ok)
 
     @classmethod
-    def FormatDisk(cls, lUserId: c_long, disk_number: int):
+    def FormatDisk(cls, lUserId: c_long, disk_number: int) -> c_long:
+        """
+        Format disk
+
+        Args:
+            lUserId (c_long): a user id as returned from NET_DVR_Login_V40
+            disk_number (int): a positional number of disk (0-7) to format
+
+        Returns:
+            c_long: A format handle
+        """
         return cls.sdk.NET_DVR_FormatDisk(lUserId, disk_number)
+
+    @classmethod
+    def GetDVRConfig_RECORDCFG_V30(cls, lUserId: c_long) -> dict | None:
+        """
+        Get recording schedule configuration (V30)
+
+        Args:
+            lUserId (c_long): a user id as returned from NET_DVR_Login_V40
+
+        Returns:
+            dict: A dict structured in a fashion of NET_DVR_RECORD_V30
+        """
+        record_v30 = NET_DVR_RECORD_V30()
+        bytes_returned = c_uint()
+
+        ok = cls.sdk.NET_DVR_GetDVRConfig(
+            lUserId,
+            NET_DVR_Command.NET_DVR_GET_RECORDCFG_V30,
+            1,
+            byref(record_v30),
+            sizeof(record_v30),
+            byref(bytes_returned),
+        )
+
+        return {
+            "record": bool(record_v30.dwRecord),
+            "rec_all_day": [
+                {
+                    "all_day_record": day.wAllDayRecord,
+                    "record_type": day.byRecordType,
+                    "reserved_data": day.reservedData,
+                }
+                for day in record_v30.struRecAllDay
+            ],
+            "record_sched": [
+                {
+                    "record_time": {
+                        "start_hour": segment.struRecordTime.byStartHour,
+                        "start_min": segment.struRecordTime.byStartMin,
+                        "stop_hour": segment.struRecordTime.byStopHour,
+                        "stop_min": segment.struRecordTime.byStopMin,
+                    },
+                    "record_type": segment.byRecordType,
+                    "reserved_data": segment.reservedData,
+
+                }
+                for day in record_v30.struRecordSched for segment in day
+            ],
+            "record_time": record_v30.dwRecordTime,
+            "pre_record_time": record_v30.dwPreRecordTime,
+            "recorder_duration": record_v30.dwRecorderDuration,
+            "redundancy_rec": record_v30.byRedundancyRec,
+            "audio_rec": record_v30.byAudioRec,
+            "stream_type": record_v30.byStreamType,
+            "passback_record": record_v30.byPassbackRecord,
+            "lock_duration": record_v30.wLockDuration,
+            "record_backup": record_v30.byRecordBackup,
+            "svc_level": record_v30.bySVCLevel,
+            "record_manage": record_v30.byRecordManage,
+            "extra_save_audio": record_v30.byExtraSaveAudio,
+            "intelligent_record": record_v30.byIntelligentRecord,
+            "reserve": record_v30.byReserve,
+        } if ok else None

@@ -98,6 +98,54 @@ class NET_DVR_NFSCFG(Structure):
     ]
 
 
+class NET_DVR_SCHEDTIME(Structure):
+    _fields_ = [
+        ("byStartHour", c_byte),
+        ("byStartMin", c_byte),
+        ("byStopHour", c_byte),
+        ("byStopMin", c_byte),
+    ]
+
+
+class NET_DVR_RECORDSCHED(Structure):
+    _fields_ = [
+        ("struRecordTime", NET_DVR_SCHEDTIME),
+        ("byRecordType", c_byte),
+        ("reservedData", c_char * 3),
+    ]
+
+
+class NET_DVR_RECORDDAY(Structure):
+    _fields_ = [
+        ("wAllDayRecord", c_ushort),
+        ("byRecordType", c_byte),
+        ("reservedData", c_char),
+    ]
+
+
+class NET_DVR_RECORD_V30(Structure):
+    _fields_ = [
+        ("dwSize", c_uint32),
+        ("dwRecord", c_uint32),
+        ("struRecAllDay", NET_DVR_RECORDDAY * MagicNumber.MAX_DAYS),
+        ("struRecordSched", NET_DVR_RECORDSCHED * MagicNumber.MAX_DAYS * MagicNumber.MAX_TIMESEGMENT_V30),
+        ("dwRecordTime", c_uint32),
+        ("dwPreRecordTime", c_uint32),
+        ("dwRecorderDuration", c_uint32),
+        ("byRedundancyRec", c_byte),
+        ("byAudioRec", c_byte),
+        ("byStreamType", c_byte),
+        ("byPassbackRecord", c_byte),
+        ("wLockDuration", c_ushort),
+        ("byRecordBackup", c_byte),
+        ("bySVCLevel", c_byte),
+        ("byRecordManage", c_byte),
+        ("byExtraSaveAudio", c_byte),
+        ("byIntelligentRecord", c_byte),
+        ("byReserve", c_byte),
+    ]
+
+
 class NET_DVR_DEVICEINFO_V30(Structure):
     _fields_ = [
         ("sSerialNumber", c_byte * 48),  # 序列号

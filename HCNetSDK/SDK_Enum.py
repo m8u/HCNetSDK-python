@@ -32,6 +32,8 @@ class MagicNumber(IntEnum):
     """
     PATHNAME_LEN = 128
     MAX_NFS_DISK = 8
+    MAX_DAYS = 7
+    MAX_TIMESEGMENT_V30 = 8
 
 
 class PTZCommand(IntEnum):
@@ -112,13 +114,17 @@ class NET_DVR_Command(IntEnum):
     """
     设备配置命令, 不同的获取功能对应不同的结构体和命令号
     """
-    NET_DVR_GET_RECORDCFG = 108                   # Get recording settings, returns god knows what todo
-    NET_DVR_SET_RECORDCFG = 109                   # Set recording settings, takes god knows what todo
+    NET_DVR_GET_RECORDCFG = 108                   # Get recording settings, returns god knows what todo asdas
+    NET_DVR_SET_RECORDCFG = 109                   # Set recording settings, takes god knows what todo asddas
     NET_DVR_GET_TRACK_PARAMCFG = 197              # 获取球机本地菜单规则, 对应结构体 NET_DVR_TRACK_PARAMCFG
     NET_DVR_GET_NFSCFG = 230                      # Get NFS storage settings, returns NET_DVR_NFSCFG
     NET_DVR_SET_NFSCFG = 231                      # Set NFS storage settings, takes NET_DVR_NFSCFG
     NET_DVR_GET_PTZPOS = 293                      # 获取IP快球PTZ参数， 对应结构体 NET_DVR_PTZPOS
     NET_DVR_GET_PTZSCOPE = 294                    # 获取IP快球PTZ范围参数， 对应结构体 NET_DVR_PTZSCOPE
+    NET_DVR_GET_RECORDCFG_V30 = 1004              # Get recording schedule (V30), todo
+    NET_DVR_SET_RECORDCFG_V30 = 1005              # Set recording schedule (V30), todo
+    NET_DVR_GET_RECORDCFG_V40 = 1008              # Get recording schedule, todo
+    NET_DVR_SET_RECORDCFG_V40 = 1009              # Set recording schedule, todo
     NET_DVR_GET_MOTION_TRACK_CFG = 3228           # 获取网络球机跟踪参数， 对应结构体 NET_DVR_MOTION_TRACK_CFG
     NET_DVR_GET_BASICPARAMCFG = 3270              # 获取PTZ基本参数信息， 对应结构体 NET_DVR_PTZ_BASICPARAMCFG
     NET_DVR_GET_PTZOSDCFG = 3272                  # 获取PTZ OSD配置参数， 对应结构体 NET_DVR_PTZ_OSDCFG
