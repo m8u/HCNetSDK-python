@@ -27,7 +27,7 @@ import os
 import platform
 from ctypes import *
 
-from .SDK_Enum import MagicNumber
+from .SDK_Enum import MagicNumber, Presets
 
 sys_platform = platform.system().lower().strip()
 
@@ -144,6 +144,16 @@ class NET_DVR_RECORD_V30(Structure):
         ("byIntelligentRecord", c_byte),
         ("byReserve", c_byte),
     ]
+
+    def __init__(self, *args, preset=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        match preset:
+            case Presets.RECORD_V30_24_BY_7_CONTINUOUS:
+                self.dwRecord = 1
+                for d in range(MagicNumber.MAX_DAYS):
+                    self.struRecAllDay[d].wAllDayRecord = 1
+                    self.struRecAllDay[d].byRecordType = 0
+        self.dwSize = sizeof(self)
 
 
 class NET_DVR_DEVICEINFO_V30(Structure):
